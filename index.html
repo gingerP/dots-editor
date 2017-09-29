@@ -1,0 +1,96 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <script src="angular.min.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body ng-app="app" ng-controller="pane">
+<div>
+    X:
+    <input type="text" ng-model="xSize"></input>
+    Y:
+    <input type="text" ng-model="ySize"></input>
+    <button ng-click="updatePane()">Update</button>
+    <button ng-click="showArray()">Show array</button>
+    <button ng-click="showTestJSON()">Show test JSON</button>
+    <button ng-click="openTextAreaPopup()">Load test JSON</button>
+    <button ng-click="openTextAreaPopup()">Load test Array</button>
+    <button ng-click="selectText()">Select text</button>
+    <button ng-click="showSignsImage()">Show Signs Image</button>
+</div>
+<hr>
+<div class="toolbar">
+    <div class="toolbar-item-first">
+        <select ng-options="item as item.label for item in templates track by item.id"
+                ng-model="selectedTemplate"></select>Templates<br>
+        <input type="checkbox" ng-model="isListenCursor">Make selection by cursor movement<br>
+        <input type="checkbox" ng-model="isVisible">Show/hide table<br>
+        <input type="checkbox" ng-model="isPositionDisplayed">Show/hide coordinates
+        <br/>
+        <label>
+            <input type="radio" ng-model="selectionType" value="border">
+            select border
+        </label>
+        <label>
+            <input type="radio" ng-model="selectionType" value="trapped">
+            select trapped
+        </label><br/>
+    </div>
+    <div class="loops-list">
+        <div id="loops">
+            <button class="add-loop-btn" ng-click="addLoop()">+</button>
+            Loops
+            <div ng-repeat="loop in loops track by loop.id"
+                 class="loop-item"
+                 ng-click="selectLoop(loop)"
+                 ng-class="{'active': loop.isActive}">
+                <span ng-bind="'Loop - ' + loop.id"></span>
+                <button class="delete-loop-btn" ng-click="deleteLoop(loop)">x</button>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<span>Selected: {{selectedSize}}</span>
+<table ng-if="isVisible">
+    <tr ng-repeat="y in array" ng-init="yIndex=$index">
+        <td style="position: relative;"
+            ng-repeat="item in array[yIndex]"
+            ng-init="xIndex=$index"
+            ng-class="{
+            'item-active': item.loopId === selectedLoopId,
+            'item-inactive': item.loopId === selectedLoopId
+            }">
+            <div class="item-square"
+                 ng-click="updateItem(item)"
+                 ng-mouseenter="updateItemOnMouseOver(item)"
+                 ng-class="{
+						'item-selected': item.isSelected,
+						'item-border': item.isBorder,
+						'item-trapped': item.isTrapped
+						}">
+            </div>
+            <div ng-show="isPositionDisplayed" class="item-hint">
+                {{xIndex}},{{yIndex}}
+            </div>
+        </td>
+    </tr>
+</table>
+<div id="popup"
+     class="popup"
+     ng-show="isPopupVisible">
+    <textarea class="load-json-textarea" ng-model="arrayToString"></textarea>
+</div>
+<div id="textarea_popup"
+     class="popup"
+     ng-show="isTextareaPopupVisible">
+    <div class="buttons-right">
+        <button ng-click="loadTestJSON()">Load</button>
+        <button ng-click="loadTestArray()">Load as array</button>
+        <button ng-click="beatyTestJSON()">Beatify</button>
+    </div>
+    <textarea class="load-json-textarea" ng-model="stringToObject"></textarea>
+</div>
+</body>
+</html>
